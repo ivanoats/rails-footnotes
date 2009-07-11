@@ -16,6 +16,7 @@ end
 class FootnotesTest < Test::Unit::TestCase
   def setup
     @controller = FootnotesController.new
+    @controller.template = Object.new
     @controller.request = ActionController::TestRequest.new
     @controller.response = ActionController::TestResponse.new
     @controller.response.body = $html.dup
@@ -175,7 +176,7 @@ class FootnotesTest < Test::Unit::TestCase
       @controller.template.expects(:instance_variable_get).returns(true)
       @controller.template.expects(:template_format).returns('html')
       @controller.performed_render = true
-
+      
       Footnotes::Filter.start!(@controller)
       @footnotes.add_footnotes!
     end
