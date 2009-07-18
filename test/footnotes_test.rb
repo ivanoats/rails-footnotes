@@ -16,6 +16,7 @@ end
 class FootnotesTest < Test::Unit::TestCase
   def setup
     @controller = FootnotesController.new
+    @controller.template = Object.new
     @controller.request = ActionController::TestRequest.new
     @controller.response = ActionController::TestResponse.new
     @controller.response.body = $html.dup
@@ -159,12 +160,12 @@ class FootnotesTest < Test::Unit::TestCase
 
   def test_insert_text
     @footnotes.send(:insert_text, :after, /<head>/, "Graffiti")
-    after = "    <head>Graffiti\n"
-    assert_equal after, @controller.response.body.to_a[2]
+    after = "    <head>Graffiti"
+    assert_equal after, @controller.response.body.split("\n")[2]
 
     @footnotes.send(:insert_text, :before, /<\/body>/, "Notes")
-    after = "    Notes</body>\n"
-    assert_equal after, @controller.response.body.to_a[12]
+    after = "    Notes</body>"
+    assert_equal after, @controller.response.body.split("\n")[12]
   end
   
   protected
