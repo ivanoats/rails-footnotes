@@ -4,11 +4,15 @@ module Footnotes
   module Notes
     class SessionNote < AbstractNote
       def initialize(controller)
-        @session = (controller.session.instance_variable_get("@data") || {}).symbolize_keys
+        @session = (controller.session || {}).symbolize_keys
+      end
+
+      def title
+        "Session (#{@session.length})"
       end
 
       def content
-        escape(@session.inspect)
+        mount_table_for_hash(@session)
       end
     end
   end

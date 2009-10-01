@@ -5,12 +5,18 @@ module Footnotes
     @@klasses = []
 
     # Default link prefix is textmate
-    @@prefix = 'txmt://open?url=file://%s&line=%d&column=%d'
+    @@prefix = 'txmt://open?url=file://%s&amp;line=%d&amp;column=%d'
 
     # Edit notes
     @@notes = [ :controller, :view, :layout, :stylesheets, :javascripts ]
     # Show notes
-    @@notes += [ :session, :cookies, :params, :filters, :routes, :env, :queries, :log, :general ]
+    @@notes += [ :assigns, :session, :cookies, :params, :filters, :routes, :env, :queries, :log, :general ]
+
+    # Change queries for rpm note when available
+    # if defined?(NewRelic)
+    #  @@notes.delete(:queries)
+    #  @@notes << :rpm
+    # end
 
     # :no_style       => If you don't want the style to be appended to your pages
     # :notes          => Class variable that holds the notes to be processed
@@ -163,6 +169,7 @@ module Footnotes
           #footnotes_debug table {text-align: center;}
           #footnotes_debug table td {padding: 0 5px;}
           #footnotes_debug tbody {text-align: left;}
+          #footnotes_debug .name_values td {vertical-align: top;}
           #footnotes_debug legend {background-color: #FFF;}
           #footnotes_debug fieldset {text-align: left; border: 1px dashed #aaa; padding: 0.5em 1em 1em 1em; margin: 1em 2em; color: #444; background-color: #FFF;}
           /* Aditional Stylesheets */
@@ -227,11 +234,10 @@ module Footnotes
         <!-- End Footnotes -->
         HTML
 
-        if @body =~ %r{<div[^>]+id=['"]footnotes_holder['"][^>]*>}
-          # Insert inside the "footnotes_holder" div if it exists
-          insert_text :after, %r{<div[^>]+id=['"]footnotes_holder['"][^>]*>}, footnotes_html
+        placeholder = /<div[^>]+id=['"]footnotes_holder['"][^>]*>/i
+        if @body =~ placeholder
+          insert_text :after, placeholder, footnotes_html
         else
-          # Otherwise, try to insert as the last part of the html body
           insert_text :before, /<\/body>/i, footnotes_html
         end
       end

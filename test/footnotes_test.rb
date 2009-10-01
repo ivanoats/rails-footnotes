@@ -16,6 +16,7 @@ end
 class FootnotesTest < Test::Unit::TestCase
   def setup
     @controller = FootnotesController.new
+    @controller.template = Object.new
     @controller.request = ActionController::TestRequest.new
     @controller.response = ActionController::TestResponse.new
     @controller.response.body = $html.dup
@@ -70,11 +71,11 @@ class FootnotesTest < Test::Unit::TestCase
   end
 
   def test_footnotes_prefix
-    assert_equal 'txmt://open?url=file://%s&line=%d&column=%d', Footnotes::Filter.prefix
-    assert_equal 'txmt://open?url=file://file&line=0&column=0', Footnotes::Filter.prefix('file', 0, 0)
-    assert_equal 'txmt://open?url=file://file&line=10&column=10', Footnotes::Filter.prefix('file', 10, 10)
-    assert_equal 'txmt://open?url=file://file&line=10&column=10', Footnotes::Filter.prefix('file', 10, 10, 10)
-    assert_equal 'txmt://open?url=file://file&line=10&column=10', Footnotes::Filter.prefix('file', '10', '10')
+    assert_equal 'txmt://open?url=file://%s&amp;line=%d&amp;column=%d', Footnotes::Filter.prefix
+    assert_equal 'txmt://open?url=file://file&amp;line=0&amp;column=0', Footnotes::Filter.prefix('file', 0, 0)
+    assert_equal 'txmt://open?url=file://file&amp;line=10&amp;column=10', Footnotes::Filter.prefix('file', 10, 10)
+    assert_equal 'txmt://open?url=file://file&amp;line=10&amp;column=10', Footnotes::Filter.prefix('file', 10, 10, 10)
+    assert_equal 'txmt://open?url=file://file&amp;line=10&amp;column=10', Footnotes::Filter.prefix('file', '10', '10')
   end
 
   def test_notes_are_initialized
@@ -159,12 +160,12 @@ class FootnotesTest < Test::Unit::TestCase
 
   def test_insert_text
     @footnotes.send(:insert_text, :after, /<head>/, "Graffiti")
-    after = "    <head>Graffiti\n"
-    assert_equal after, @controller.response.body.to_a[2]
+    after = "    <head>Graffiti"
+    assert_equal after, @controller.response.body.split("\n")[2]
 
     @footnotes.send(:insert_text, :before, /<\/body>/, "Notes")
-    after = "    Notes</body>\n"
-    assert_equal after, @controller.response.body.to_a[12]
+    after = "    Notes</body>"
+    assert_equal after, @controller.response.body.split("\n")[12]
   end
   
   protected
@@ -172,10 +173,11 @@ class FootnotesTest < Test::Unit::TestCase
     # Then we call add_footnotes!
     #
     def footnotes_perform!
-      @controller.template.expects(:instance_variable_get).returns(true)
+      
+      #@controller.template.expects(:instance_variable_get).returns(true)
       @controller.template.expects(:template_format).returns('html')
       @controller.performed_render = true
-
+      
       Footnotes::Filter.start!(@controller)
       @footnotes.add_footnotes!
     end

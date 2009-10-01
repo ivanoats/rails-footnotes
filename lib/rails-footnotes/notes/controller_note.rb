@@ -23,7 +23,17 @@ module Footnotes
         # Some controller classes come with the Controller:: module and some don't
         # (anyone know why? -- Duane)
         def controller_filename
-          File.join(File.expand_path(RAILS_ROOT), 'app', 'controllers', "#{@controller.class.to_s.underscore}.rb").sub('/controllers/controllers/', '/controllers/')
+          controller_name=@controller.class.to_s.underscore
+          controller_name='application' if controller_name=='application_controller'
+          if ActionController::Routing.respond_to? :controller_paths
+            ActionController::Routing.controller_paths.each do |controller_path|
+              full_controller_path = File.join(File.expand_path(controller_path), "#{controller_name}.rb")
+              return full_controller_path if File.exists?(full_controller_path)
+            end
+            raise "File not found"
+          else
+            File.join(File.expand_path(RAILS_ROOT), 'app', 'controllers', "#{controller_name}.rb").sub('/controllers/controllers/', '/controllers/')
+          end
         end
 
         def controller_text
@@ -41,7 +51,7 @@ module Footnotes
         def lines_from_index(string, index)
           return nil if string.blank? || index.blank?
 
-          lines = string.to_a
+          lines = string.respond_to?(:to_a) ? string.to_a : string.lines.to_a
           running_length = 0
           lines.each_with_index do |line, i|
             running_length += line.length

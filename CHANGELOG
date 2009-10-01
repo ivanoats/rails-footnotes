@@ -1,10 +1,16 @@
-TODO:
-  * Create ProfilerNote
-  * Javascript injection for partials
+== Footnotes v3.6
+  * Cookies, sessions and params notes now use table;
+  * Old components note removed;
+  * Added assigns notes (thanks to scorpio);
+  * Improve query note, count query time and display it with several configurable
+    options (:alert_db_time and :alert_sql_number) (thanks to scorpio);
+  * Fixed bugs of layout link and route note related (thanks to scorpio).
+
+== Footnotes v3.5
+  * Added NewRelic RPM footnote (thanks to kbrock);
+  * Several bug fixes (thanks to kbrock, ivanoats and kristopher).
 
 == Footnotes v3.4
-Author: José Valim (jose.valim@gmail.com)
-Site: http://josevalim.blogspot.com/
   * Rails 2.3 compatible.
 
 == Footnotes v3.3.1
@@ -47,8 +53,8 @@ Site: http://josevalim.blogspot.com/
 
 == Textmate Footnotes v2.0
 Copyright (c) 2006 InquiryLabs, Inc.
-Author: Duane Johnson (duane.johnson@gmail.com)
-Site: http://inquirylabs.com/
+http://inquirylabs.com/
+
 Description:
   Creates clickable footnotes on each rendered page, as well as clickable
   links in the backtrace should an error occur in your Rails app. Links take
